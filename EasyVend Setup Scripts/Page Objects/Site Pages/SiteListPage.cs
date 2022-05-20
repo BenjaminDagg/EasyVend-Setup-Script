@@ -56,6 +56,7 @@ namespace EasyVend_Setup_Scripts
         }
 
 
+
         public bool AddSiteIsVisible()
         {
 

@@ -113,3 +113,5 @@ C:\Users\bdagg\Documents\EasyVend Setup Scripts\EasyVend Setup Scripts\EasyVend 
 C:\Users\bdagg\Documents\EasyVend Setup Scripts\EasyVend Setup Scripts\EasyVend Setup Scripts\obj\Debug\net6.0\EasyVend Setup Scripts.pdb
 C:\Users\bdagg\Documents\EasyVend Setup Scripts\EasyVend Setup Scripts\EasyVend Setup Scripts\obj\Debug\net6.0\EasyVend Setup Scripts.genruntimeconfig.cache
 C:\Users\bdagg\Documents\EasyVend Setup Scripts\EasyVend Setup Scripts\EasyVend Setup Scripts\obj\Debug\net6.0\ref\EasyVend Setup Scripts.dll
+C:\Users\bdagg\Documents\EasyVend Setup Scripts\EasyVend Setup Scripts\EasyVend Setup Scripts\obj\Debug\net6.0\Interop.Microsoft.Office.Interop.Excel.dll
+C:\Users\bdagg\Documents\EasyVend Setup Scripts\EasyVend Setup Scripts\EasyVend Setup Scripts\obj\Debug\net6.0\EasyVend Setup Scripts.csproj.ResolveComReference.cache

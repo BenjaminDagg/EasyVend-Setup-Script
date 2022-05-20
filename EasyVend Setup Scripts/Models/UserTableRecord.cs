@@ -18,6 +18,8 @@ namespace EasyVend_Setup_Scripts
         public bool Locked { get; set; }
         public bool Active { get; set; }
 
+        public string SiteName { get; set; }
+
         public UserTableRecord(string username, string fName, string lName, string role, bool locked, bool active)
         {
             Username = username;
@@ -37,7 +39,7 @@ namespace EasyVend_Setup_Scripts
 
         public void display()
         {
-            Console.WriteLine("Email: {0}, First Name: {1}, Last Name: {2},  Role: {3}", Username, FirstName, LastName, Role);
+            Console.WriteLine("Email: {0}, First Name: {1}, Last Name: {2},  Role: {3} Site: {4}", Username, FirstName, LastName, Role, SiteName);
         }
 
 

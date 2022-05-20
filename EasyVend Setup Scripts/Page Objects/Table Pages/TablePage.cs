@@ -150,7 +150,7 @@ namespace EasyVend_Setup_Scripts
         public void EnterSearchTerm(string search)
         {
             WaitForElement(By.XPath("//input[@type='search']"));
-
+            
             SearchInput.Clear();
             SearchInput.SendKeys(search);
 

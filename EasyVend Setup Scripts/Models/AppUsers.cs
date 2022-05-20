@@ -45,6 +45,9 @@ namespace EasyVend_Setup_Scripts
         public static User SITE_ADMIN = new User(ConfigurationManager.AppSettings["SiteAdminUsername"],
             ConfigurationManager.AppSettings["SiteAdminPassword"]);
 
+        public static User Default = new User(ConfigurationManager.AppSettings["DefaultUsername"],
+            ConfigurationManager.AppSettings["DefaultUserPassword"]);
+
         public static User SITE_REPORT
         {
             get

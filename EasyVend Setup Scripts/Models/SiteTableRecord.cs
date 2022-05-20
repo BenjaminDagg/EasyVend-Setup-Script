@@ -12,13 +12,37 @@ namespace EasyVend_Setup_Scripts
         public int Id { get; set; }
         public string Lottery { get; set; }
         public string AgentNumber { get; set; }
-        public int DeviceCount { get; set; }
+        public string ExternalStoreId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
         public string Phone { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string Zipcode { get; set; }
+        public int DeviceCount { get; set; }
 
 
         public void display()
         {
-            Console.WriteLine("Name: {0} Id: {1} Lottery: {2} Agent#: {3} Devices: {4} Phone: {5}", SiteName, Id, Lottery, AgentNumber, DeviceCount, Phone);
+            Console.WriteLine(
+                "Name: {0} " +
+                "Id: {1} " +
+                "Lottery: {2} " +
+                "Agent#: {3} " +
+                "Devices: {4} " +
+                "Phone: {5}" +
+                "ExternalStoreId: {6}" +
+                "FirstName: {7}" +
+                "LastName: {8}" +
+                "Email: {9}" +
+                "Phone: {10}" +
+                "Address: {11}" +
+                "City: {12}" +
+                "Zip: {13}"
+                , SiteName, Id, Lottery, AgentNumber, DeviceCount
+                , Phone,ExternalStoreId,FirstName,LastName, Email,
+                Phone,Address,City,Zipcode);
         }
 
 
