@@ -21,6 +21,7 @@ namespace EasyVend_Setup_Scripts
     class SetupScript
     {
         string baseUrl;
+        string excelPath;
 
         ExcelReader excelData;
 
@@ -29,8 +30,6 @@ namespace EasyVend_Setup_Scripts
         private SiteListPage siteList;
         private SiteDetailsEditPage siteDetails;
         private DeviceListPage deviceList;
-        private SiteTableRecord targetSite;
-        private DeviceDetailsPage deviceDetails;
         private SiteDetailsAddPage addSite;
         private VendorDetailsPage vendorDetails;
         private VendorUsersPage vendorUsers;
@@ -44,14 +43,15 @@ namespace EasyVend_Setup_Scripts
             DriverFactory.InitDriver();
 
             baseUrl = ConfigurationManager.AppSettings["URL"];
-            excelData = new ExcelReader(@"C:\Users\bdagg\Documents\EasyVend Setup Scripts\EasyVend Setup Scripts\EasyVend Setup Scripts\Data.xlsx",1);
+            excelPath = ConfigurationManager.AppSettings["ExcelPath"];
+
+            excelData = new ExcelReader(excelPath,1);
 
             loginPage = new LoginPage(DriverFactory.Driver);
             navMenu = new NavMenu(DriverFactory.Driver);
             siteList = new SiteListPage(DriverFactory.Driver);
             siteDetails = new SiteDetailsEditPage(DriverFactory.Driver);
             deviceList = new DeviceListPage(DriverFactory.Driver);
-            deviceDetails = new DeviceDetailsPage(DriverFactory.Driver);
             addSite = new SiteDetailsAddPage(DriverFactory.Driver);
             vendorDetails = new VendorDetailsPage(DriverFactory.Driver);
             vendorUsers = new VendorUsersPage(DriverFactory.Driver);
