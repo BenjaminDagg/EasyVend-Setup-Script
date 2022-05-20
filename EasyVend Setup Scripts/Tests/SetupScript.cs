@@ -63,23 +63,11 @@ namespace EasyVend_Setup_Scripts
         [TearDown]
         public void EndTest()
         {
-
             excelData.Close();
             DriverFactory.CloseDriver();
         }
 
-        [Test]
-        public void Read_Excel()
-        {
-            excelData.SetSheet((int)ExcelSheets.Users);
-
-            List<UserTableRecord> usres = excelData.GetUsersByRole("Vendor Admin");
-            foreach (UserTableRecord user in usres)
-            {
-                user.display();
-            }
-
-        }
+        
 
 
         [Test, Description("Add all vendor users from the Excel file")]
@@ -232,7 +220,7 @@ namespace EasyVend_Setup_Scripts
         }
 
 
-        [Test, Description("Add all sites from the Excel file")]
+        [Test, Description("Add all sites from the Excel file"), Order(1)]
         public void Add_Sites()
         {
             List<SiteTableRecord> sites = excelData.GetSites();
@@ -246,7 +234,8 @@ namespace EasyVend_Setup_Scripts
 
             foreach(SiteTableRecord site in sites)
             {
-                site.display();
+                navMenu.ClickSites();
+
                 //site already exists
                 siteList.EnterSearchTerm(site.SiteName);
                 if(siteList.indexOfSite(site.SiteName) != -1)
