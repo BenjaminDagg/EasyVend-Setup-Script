@@ -90,10 +90,13 @@ namespace EasyVend_Setup_Scripts
             //add each user
             foreach(UserTableRecord user in vendorAdminUsers)
             {
+                Console.WriteLine("Adding {0} user {1}", user.Role, user.Username);
+
                 //check if user already exists
                 vendorUsers.EnterSearchTerm(user.Username);
                 if (vendorUsers.indexOfUser(user.Username) != -1)
                 {
+                    Console.WriteLine("\t Error adding user {0}. User already exists", user.Username);
                     continue;
                 }
 
@@ -131,11 +134,14 @@ namespace EasyVend_Setup_Scripts
             //add each user
             foreach (UserTableRecord user in lotteryAdminUsers)
             {
+                Console.WriteLine("Adding {0} user {1}", user.Role, user.Username);
+
                 lotteryUsers.ClearSearchField();
                 //check if user already exists
                 lotteryUsers.EnterSearchTerm(user.Username);
                 if (lotteryUsers.indexOfUser(user.Username) != -1)
                 {
+                    Console.WriteLine("\t Error adding user {0}. User already exists", user.Username);
                     continue;
                 }
 
@@ -167,12 +173,15 @@ namespace EasyVend_Setup_Scripts
 
             foreach(SiteTableRecord site in sites)
             {
+                Console.WriteLine("Adding site {0}", site.SiteName);
+
                 navMenu.ClickSites();
 
                 //site already exists
                 siteList.EnterSearchTerm(site.SiteName);
                 if(siteList.indexOfSite(site.SiteName) != -1)
                 {
+                    Console.WriteLine("\t Error adding site {0}. Site already exists", site.SiteName);
                     continue;
                 }
 
@@ -248,6 +257,7 @@ namespace EasyVend_Setup_Scripts
                 siteUsers.EnterSearchTerm(user.Username);
                 if(siteUsers.indexOfUser(user.Username) != -1)
                 {
+                    Console.WriteLine("\t Error adding user {0} to site {1}. User already exists at this site", user.Username,user.SiteName);
                     continue;
                 }
 
