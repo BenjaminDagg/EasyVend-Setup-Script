@@ -28,7 +28,7 @@ namespace EasyVend_Setup_Scripts
         ACTIVE = 5,
         ACTIONS = 6
     }
-
+    
     internal class UserTablePage : TablePage
     {
         public AddUserModal AddUserModal { get; set; }

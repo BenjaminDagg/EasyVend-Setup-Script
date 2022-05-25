@@ -111,7 +111,7 @@ namespace EasyVend_Setup_Scripts
 
 
         [Test, Description("Add all Lottery Admin users from the Exccel file")]
-        public void Add_Lottery_Admin()
+        public void Add_Lottery_Users()
         {
             DriverFactory.GoToUrl(baseUrl);
             loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
@@ -119,6 +119,9 @@ namespace EasyVend_Setup_Scripts
 
             excelData.SetSheet((int)ExcelSheets.Users);
             //List<UserTableRecord> lotteryAdminUsers = excelData.GetUsersByRole("Lottery Admin");
+            List<UserTableRecord> lotteryAdminUsers = excelData.GetUsers()
+                .Where(user => user.Role.ToLower().Contains("lottery"))
+                .ToList();
 
             navMenu.ClickLottery();
             lotteryDetails.EntityTabs.ClickUsersTab();
@@ -126,6 +129,7 @@ namespace EasyVend_Setup_Scripts
             //add each user
             foreach (UserTableRecord user in lotteryAdminUsers)
             {
+                lotteryUsers.ClearSearchField();
                 //check if user already exists
                 lotteryUsers.EnterSearchTerm(user.Username);
                 if (lotteryUsers.indexOfUser(user.Username) != -1)
@@ -139,45 +143,7 @@ namespace EasyVend_Setup_Scripts
                     user.FirstName,
                     user.LastName,
                     user.Phone,
-                    user.Role == "Lottery Admin" ? (int)UserRoleSelect.ADMIN : (int)UserRoleSelect.REPORT
-                 );
-                lotteryUsers.EnterSearchTerm(user.Username);
-                Assert.AreNotEqual(-1, lotteryUsers.indexOfUser(user.Username));
-            }
-
-        }
-
-
-        [Test, Description("Add all Lottery Admin users from the Exccel file")]
-        public void Add_Lottery_Report()
-        {
-            DriverFactory.GoToUrl(baseUrl);
-            loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
-            Assert.IsTrue(LoginPage.IsLoggedIn);
-
-            excelData.SetSheet((int)ExcelSheets.Users);
-            List<UserTableRecord> lotteryReportUsers = excelData.GetUsersByRole("Lottery Report");
-
-            navMenu.ClickLottery();
-            lotteryDetails.EntityTabs.ClickUsersTab();
-
-            //add each user
-            foreach (UserTableRecord user in lotteryReportUsers)
-            {
-                //check if user already exists
-                lotteryUsers.EnterSearchTerm(user.Username);
-                if (lotteryUsers.indexOfUser(user.Username) != -1)
-                {
-                    continue;
-                }
-
-                lotteryUsers.ClickAddUser();
-                lotteryUsers.AddUserSuccess(
-                    user.Username,
-                    user.FirstName,
-                    user.LastName,
-                    user.Phone,
-                    user.Role == "Lottery Admin" ? (int)UserRoleSelect.ADMIN : (int)UserRoleSelect.REPORT
+                    user.Role.ToLower().Contains("admin") ? (int)UserRoleSelect.ADMIN : (int)UserRoleSelect.REPORT
                  );
                 lotteryUsers.EnterSearchTerm(user.Username);
                 Assert.AreNotEqual(-1, lotteryUsers.indexOfUser(user.Username));
