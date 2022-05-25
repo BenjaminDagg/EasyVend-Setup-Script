@@ -71,15 +71,17 @@ namespace EasyVend_Setup_Scripts
 
 
         [Test, Description("Add all vendor users from the Excel file")]
-        public void Add_Vendor_Admin()
+        public void Add_Vendor_Users()
         {
             DriverFactory.GoToUrl(baseUrl);
             loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
             Assert.IsTrue(LoginPage.IsLoggedIn);
 
             excelData.SetSheet((int)ExcelSheets.Users);
-            List<UserTableRecord> vendorAdminUsers = excelData.GetUsersByRole("Vendor Admin");
-
+            List<UserTableRecord> vendorAdminUsers = excelData.GetUsers()
+                .Where(user => user.Role.Contains("Vendor"))
+                .ToList();
+            
             navMenu.ClickVendor();
             vendorDetails.EntityTabs.ClickUsersTab();
             
@@ -104,43 +106,7 @@ namespace EasyVend_Setup_Scripts
                 vendorUsers.EnterSearchTerm(user.Username);
                 Assert.AreNotEqual(-1, vendorUsers.indexOfUser(user.Username));
             }
-        }
-
-
-        [Test, Description("Add all vendor users from the Excel file")]
-        public void Add_Vendor_Report()
-        {
-            DriverFactory.GoToUrl(baseUrl);
-            loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
-            Assert.IsTrue(LoginPage.IsLoggedIn);
-
-            excelData.SetSheet((int)ExcelSheets.Users);
-            List<UserTableRecord> vendorReportUsers = excelData.GetUsersByRole("Vendor Report");
-
-            navMenu.ClickVendor();
-            vendorDetails.EntityTabs.ClickUsersTab();
-
-            //add each user
-            foreach (UserTableRecord user in vendorReportUsers)
-            {
-                //check if user already exists
-                vendorUsers.EnterSearchTerm(user.Username);
-                if(vendorUsers.indexOfUser(user.Username) != -1)
-                {
-                    continue;
-                }
-
-                vendorUsers.ClickAddUser();
-                vendorUsers.AddUserSuccess(
-                    user.Username,
-                    user.FirstName,
-                    user.LastName,
-                    user.Phone,
-                    user.Role == "Vendor Admin" ? (int)UserRoleSelect.ADMIN : (int)UserRoleSelect.REPORT
-                 );
-                vendorUsers.EnterSearchTerm(user.Username);
-                Assert.AreNotEqual(-1, vendorUsers.indexOfUser(user.Username));
-            }
+            
         }
 
 
@@ -152,7 +118,7 @@ namespace EasyVend_Setup_Scripts
             Assert.IsTrue(LoginPage.IsLoggedIn);
 
             excelData.SetSheet((int)ExcelSheets.Users);
-            List<UserTableRecord> lotteryAdminUsers = excelData.GetUsersByRole("Lottery Admin");
+            //List<UserTableRecord> lotteryAdminUsers = excelData.GetUsersByRole("Lottery Admin");
 
             navMenu.ClickLottery();
             lotteryDetails.EntityTabs.ClickUsersTab();
