@@ -76,9 +76,10 @@ namespace EasyVend_Setup_Scripts
 
         public UserTableRecord GetUserByRole(string role)
         {
-            
 
-            for (int i = 2; i <= range.Rows.Count; i++)
+            int count = RowCount();
+            
+            for (int i = 2; i <= count; i++)
             {
                 string userRole = range.Cells[i, (int)ExcelUserColumn.Role].Value2.ToString();
 
@@ -107,8 +108,10 @@ namespace EasyVend_Setup_Scripts
         public List<UserTableRecord> GetUsers()
         {
             List<UserTableRecord> users = new List<UserTableRecord>();
+            int count = RowCount();
+            
 
-            for(int i = 2; i <= range.Rows.Count; i++)
+            for (int i = 2; i <= range.Rows.Count; i++)
             {
                 try
                 {
@@ -141,6 +144,8 @@ namespace EasyVend_Setup_Scripts
         {
             SetSheet((int)ExcelSheets.Users);
             List<UserTableRecord> users = new List<UserTableRecord>();
+            int count = RowCount();
+            
 
             for (int i = 2; i <= range.Rows.Count; i++)
             {
@@ -176,30 +181,40 @@ namespace EasyVend_Setup_Scripts
             SetSheet((int)ExcelSheets.Sites);
 
             List<SiteTableRecord> sites = new List<SiteTableRecord>();
-
-            int recordCount = range.Rows.Count;
+            int recordCount = ws.Cells.Find(
+                What: "*",
+                SearchOrder: Excel.XlSearchOrder.xlByRows,
+                SearchDirection: Excel.XlSearchDirection.xlPrevious,
+                MatchCase: false
+            ).Row;
+            
             if(recordCount == 1)
             {
                 return sites;
             }
-
-            for(int i = 2; i <= range.Rows.Count; i++)
+            
+            for(int i = 2; i <= recordCount; i++)
             {
                 try
                 {
+                    if (ws.Cells[i, 1].Value2 == null)
+                    {
+                        continue;
+                    }
+
                     string name = range.Cells[i, (int)ExcelSiteColumn.Name].Value2.ToString();
-                    string AgentNum = range.Cells[i, (int)ExcelSiteColumn.AgentNumber].Value2.ToString();
-                    string ExternalStoreId = range.Cells[i, (int)ExcelSiteColumn.ExternalStoreId].Value2.ToString();
+                    var AgentNum = range.Cells[i, (int)ExcelSiteColumn.AgentNumber].Value2.ToString().ToString();
+                    string ExternalStoreId = range.Cells[i, (int)ExcelSiteColumn.ExternalStoreId].Value2;
                     string fName = range.Cells[i, (int)ExcelSiteColumn.FirstName].Value2.ToString();
                     string lName = range.Cells[i, (int)ExcelSiteColumn.LastName].Value2.ToString();
                     string email = range.Cells[i, (int)ExcelSiteColumn.Email].Value2.ToString();
-                    string Phone = range.Cells[i, (int)ExcelSiteColumn.Phone].Value2.ToString();
+                    var Phone = range.Cells[i, (int)ExcelSiteColumn.Phone].Value2.ToString();
                     string Address = range.Cells[i, (int)ExcelSiteColumn.Address].Value2.ToString();
                     string City = range.Cells[i, (int)ExcelSiteColumn.City].Value2.ToString();
-                    string zip = range.Cells[i, (int)ExcelSiteColumn.Zipcode].Value2.ToString();
+                    var zip = range.Cells[i, (int)ExcelSiteColumn.Zipcode].Value2.ToString();
                     int devices = 0;
 
-                    if(range.Cells[i,(int)ExcelSiteColumn.DeviceCount].Value != null)
+                    if (range.Cells[i, (int)ExcelSiteColumn.DeviceCount].Value != null)
                     {
                         devices = int.Parse(range.Cells[i, (int)ExcelSiteColumn.DeviceCount].Value.ToString());
                     }
@@ -222,6 +237,7 @@ namespace EasyVend_Setup_Scripts
                 catch(Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    continue;
                 }
 
 
@@ -237,8 +253,9 @@ namespace EasyVend_Setup_Scripts
 
             List<UserTableRecord> users = new List<UserTableRecord>();
 
-
-            for (int i = 2; i <= range.Rows.Count; i++)
+            int count = RowCount();
+       
+            for (int i = 2; i <= count; i++)
             {
                 if(range.Cells[i,ExcelUserColumn.SiteName].Value == null || range.Cells[i, ExcelUserColumn.SiteName].Value == "")
                 {
@@ -278,6 +295,19 @@ namespace EasyVend_Setup_Scripts
             }
 
             return range.Cells[rowNum, colNum].Value.ToString();
+        }
+
+
+        public int RowCount()
+        {
+            int recordCount = ws.Cells.Find(
+                What: "*",
+                SearchOrder: Excel.XlSearchOrder.xlByRows,
+                SearchDirection: Excel.XlSearchDirection.xlPrevious,
+                MatchCase: false
+            ).Row;
+
+            return recordCount;
         }
 
 

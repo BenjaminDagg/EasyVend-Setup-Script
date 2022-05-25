@@ -36,6 +36,7 @@ namespace EasyVend_Setup_Scripts
         private LotteryDetailsPage lotteryDetails;
         private LotteryUsersPage lotteryUsers;
         private SiteUsersPage siteUsers;
+        private UserManagementPage userManagement;
 
         [SetUp]
         public void Setup()
@@ -58,6 +59,7 @@ namespace EasyVend_Setup_Scripts
             lotteryDetails = new LotteryDetailsPage(DriverFactory.Driver);
             lotteryUsers = new LotteryUsersPage(DriverFactory.Driver);
             siteUsers = new SiteUsersPage(DriverFactory.Driver);
+            userManagement = new UserManagementPage(DriverFactory.Driver);
         }
 
         [TearDown]
@@ -157,7 +159,6 @@ namespace EasyVend_Setup_Scripts
         {
             List<SiteTableRecord> sites = excelData.GetSites();
             
-
             DriverFactory.GoToUrl(baseUrl);
             loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
             Assert.IsTrue(LoginPage.IsLoggedIn);
@@ -208,21 +209,36 @@ namespace EasyVend_Setup_Scripts
             {
                 Assert.Pass();
             }
+            
 
             DriverFactory.GoToUrl(baseUrl);
             loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
             Assert.IsTrue(LoginPage.IsLoggedIn);
 
             navMenu.ClickSites();
-            
+
+            bool userExists = false;
             foreach(UserTableRecord user in users)
             {
+                Console.WriteLine("Adding user {0} to site {1}", user.Username, user.SiteName);
+
+                //check if user already exists. If they do add them as existing user
+                navMenu.ClickVendor();
+                vendorDetails.EntityTabs.ClickUserManagementTab();
+                userManagement.EnterSearchTerm(user.Username);
+                if(userManagement.indexOfUser(user.Username) != -1)
+                {
+                    userExists = true;
+                }
+
                 string siteName = user.SiteName;
 
+                navMenu.ClickSites();
                 //site hasn't been added yet
                 siteList.EnterSearchTerm(siteName);
                 if(siteList.indexOfSite(siteName) == -1)
                 {
+                    Console.WriteLine("\t Error adding user {0} to site {1}. Site {2} was not found",user.Username,user.SiteName,user.SiteName);
                     continue;
                 }
                 siteList.ClickSiteByIndex(0);
@@ -236,20 +252,29 @@ namespace EasyVend_Setup_Scripts
                 }
 
                 //add user
-                siteUsers.ClickAddUser();
-                siteUsers.AddUserSuccess(
-                    user.Username,
-                    user.FirstName,
-                    user.LastName,
-                    user.Phone,
-                    user.Role.ToLower().Contains("Admin") ? (int)UserRoleSelect.ADMIN : (int)UserRoleSelect.REPORT
-                );
+                if(userExists == true)
+                {
+                    siteUsers.ClickAddUser();
+                    siteUsers.AddExistingUser(user.Username);
+                }
+                else
+                {
+                    siteUsers.ClickAddUser();
+                    siteUsers.AddUserSuccess(
+                        user.Username,
+                        user.FirstName,
+                        user.LastName,
+                        user.Phone,
+                        user.Role.ToLower().Contains("admin") ? (int)UserRoleSelect.ADMIN : (int)UserRoleSelect.REPORT
+                    );
+                }
+                
 
                 //verify user was added
                 siteUsers.EnterSearchTerm(user.Username);
                 Assert.AreNotEqual(-1, siteUsers.indexOfUser(user.Username));
 
-                navMenu.ClickSites();
+                userExists = false;
             }
 
         }
@@ -258,7 +283,9 @@ namespace EasyVend_Setup_Scripts
         [Test, Description("Add devices for sites")]
         public void Add_Devices()
         {
-            List<SiteTableRecord> sites = excelData.GetSites();
+            List<SiteTableRecord> sites = excelData.GetSites()
+                .DistinctBy(site => site.SiteName)
+                .ToList();
 
             DriverFactory.GoToUrl(baseUrl);
             loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
@@ -290,7 +317,7 @@ namespace EasyVend_Setup_Scripts
                 siteDetails.EntityTabs.ClickDeviceTab();
 
                 //site already has the specified number of devices
-                if(deviceList.getRecordCount() == site.DeviceCount)
+                if(deviceList.getRecordCount() >= site.DeviceCount)
                 {
                     continue;
                 }
