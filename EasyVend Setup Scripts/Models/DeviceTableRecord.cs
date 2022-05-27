@@ -8,48 +8,40 @@ namespace EasyVend_Setup_Scripts
 {
     internal class DeviceTableRecord
     {
+        public string SiteName { get; set; }
+
+        public string SerialNumber { get; set; }
+        public string [] ExternalTerminalIds { get; set; }
         public int DeviceId { get; set; }
         public int SiteId { get; set; }
-        public string SerialNumber { get; set; }
         public bool IsActive { get; set; }
-
         public string Version { get; set; }
 
-
+        
         public DeviceTableRecord()
         {
 
         }
 
 
-        public DeviceTableRecord(int id, int siteId, string serial, bool active)
+        public DeviceTableRecord(string site, string serial, string [] terminalIds)
         {
-            DeviceId = id;
-            SiteId = siteId;
-            SerialNumber = serial;
-            IsActive = active;
+            ExternalTerminalIds = new string[4];
+
+            this.SiteName = site;
+            this.SerialNumber = serial;
+            this.ExternalTerminalIds = terminalIds;
         }
-
-
-        public DeviceTableRecord(int id, int siteId)
-        {
-            DeviceId = id;
-            SiteId = siteId;
-        }
-
 
         public void Display()
         {
-            Console.WriteLine("DeviceId: {0} SiteId: {1} Serial# {2} Active: {3} Version: {4}", DeviceId, SiteId, SerialNumber, IsActive, Version);
+            Console.Write("Site: {0} SN: {1} ExternalTerminalIds: ", SiteName, SerialNumber);
+            for (int i = 0; i < 4; i++)
+            {
+                Console.Write(ExternalTerminalIds[i] + ", ");
+            }
+            Console.WriteLine();
         }
 
-
-        public static bool AreEqual(DeviceTableRecord A, DeviceTableRecord B)
-        {
-            return (
-                A.DeviceId == B.DeviceId &&
-                A.SiteId == B.SiteId
-            );
-        }
     }
 }

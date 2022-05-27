@@ -43,10 +43,21 @@ namespace EasyVend_Setup_Scripts
         DeviceCount = 11
     }
 
+    public enum ExcelDeviceColumn : int
+    {
+        SiteName = 1,
+        SerialNumber = 2,
+        ExternalTerminalId1 = 3,
+        ExternalTerminalId2 = 4,
+        ExternalTerminalId3 = 5,
+        ExternalTerminalId4 = 6,
+    }
+
     public enum ExcelSheets : int
     {
         Users = 1,
-        Sites = 2
+        Sites = 2,
+        Devices = 3
     }
 
     class ExcelReader
@@ -195,12 +206,13 @@ namespace EasyVend_Setup_Scripts
             
             for(int i = 2; i <= recordCount; i++)
             {
-                try
-                {
+                
                     if (ws.Cells[i, 1].Value2 == null)
                     {
                         continue;
                     }
+
+                    SiteTableRecord site = new SiteTableRecord();
 
                     string name = range.Cells[i, (int)ExcelSiteColumn.Name].Value2.ToString();
                     var AgentNum = range.Cells[i, (int)ExcelSiteColumn.AgentNumber].Value2.ToString().ToString();
@@ -212,14 +224,18 @@ namespace EasyVend_Setup_Scripts
                     string Address = range.Cells[i, (int)ExcelSiteColumn.Address].Value2.ToString();
                     string City = range.Cells[i, (int)ExcelSiteColumn.City].Value2.ToString();
                     var zip = range.Cells[i, (int)ExcelSiteColumn.Zipcode].Value2.ToString();
-                    int devices = 0;
+                    int deviceCount = 0;
 
+                    
+                    //add devices
                     if (range.Cells[i, (int)ExcelSiteColumn.DeviceCount].Value != null)
                     {
-                        devices = int.Parse(range.Cells[i, (int)ExcelSiteColumn.DeviceCount].Value.ToString());
+                        deviceCount = int.Parse(range.Cells[i, (int)ExcelSiteColumn.DeviceCount].Value.ToString());
                     }
-
-                    SiteTableRecord site = new SiteTableRecord();
+                    List<DeviceTableRecord> devices = GetDevices(name);
+                    site.Devices = devices;
+                    SetSheet((int)ExcelSheets.Sites);
+                    
                     site.SiteName = name;
                     site.AgentNumber = AgentNum;
                     site.ExternalStoreId = ExternalStoreId;
@@ -230,18 +246,19 @@ namespace EasyVend_Setup_Scripts
                     site.Address = Address;
                     site.City = City;
                     site.Zipcode = zip;
-                    site.DeviceCount = devices;
+                    site.DeviceCount = deviceCount;
+
+                    foreach(DeviceTableRecord device in site.Devices)
+                    {
+                        Console.WriteLine(site.SiteName + "Devices: " + device.SerialNumber);
+                    }
 
                     sites.Add(site);
                 }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    continue;
-                }
+                
 
 
-            }
+            
 
             return sites;
         }
@@ -283,6 +300,47 @@ namespace EasyVend_Setup_Scripts
             return users;
         }
 
+
+
+        public List<DeviceTableRecord> GetDevices(string siteName)
+        {
+            SetSheet((int)ExcelSheets.Devices);
+
+            int count = RowCount();
+            
+
+            List<DeviceTableRecord> devices = new List<DeviceTableRecord>();
+
+            for(int i = 2; i <= count; i++)
+            {
+                string site = range.Cells[i, ExcelDeviceColumn.SiteName].Value2.ToString();
+
+                if(site == siteName)
+                {
+                    string SN;
+                    if(range.Cells[i, ExcelDeviceColumn.SerialNumber].Value2 == null || range.Cells[i, ExcelDeviceColumn.SerialNumber].Value2 == "")
+                    {
+                        SN = null;
+                    }
+                    else
+                    {
+                        SN = range.Cells[i, ExcelDeviceColumn.SerialNumber].Value2.ToString();
+                    }
+                    string terminal1 = range.Cells[i, ExcelDeviceColumn.ExternalTerminalId1].Value2.ToString();
+                    string terminal2 = range.Cells[i, ExcelDeviceColumn.ExternalTerminalId2].Value2.ToString();
+                    string terminal3 = range.Cells[i, ExcelDeviceColumn.ExternalTerminalId3].Value2.ToString();
+                    string terminal4 = range.Cells[i, ExcelDeviceColumn.ExternalTerminalId4].Value2.ToString();
+
+                    string[] terminals = { terminal1, terminal2, terminal3, terminal4 };
+                    DeviceTableRecord device = new DeviceTableRecord(site, SN, terminals);
+                    device.Display();
+
+                    devices.Add(device);
+                }
+            }
+
+            return devices;
+        }
 
 
         public string ReadCell(int rowNum, int colNum, int sheetNum)

@@ -1,0 +1,6 @@
+C:\Users\Ben\Documents\EasyVend TMS Setup Script\EasyVend Setup Scripts\obj\Debug\net5.0\EasyVend Setup Scripts.csproj.AssemblyReference.cache
+C:\Users\Ben\Documents\EasyVend TMS Setup Script\EasyVend Setup Scripts\obj\Debug\net5.0\EasyVend Setup Scripts.csproj.ResolveComReference.cache
+C:\Users\Ben\Documents\EasyVend TMS Setup Script\EasyVend Setup Scripts\obj\Debug\net5.0\EasyVend Setup Scripts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ben\Documents\EasyVend TMS Setup Script\EasyVend Setup Scripts\obj\Debug\net5.0\EasyVend Setup Scripts.AssemblyInfoInputs.cache
+C:\Users\Ben\Documents\EasyVend TMS Setup Script\EasyVend Setup Scripts\obj\Debug\net5.0\EasyVend Setup Scripts.AssemblyInfo.cs
+C:\Users\Ben\Documents\EasyVend TMS Setup Script\EasyVend Setup Scripts\obj\Debug\net5.0\EasyVend Setup Scripts.csproj.CoreCompileInputs.cache

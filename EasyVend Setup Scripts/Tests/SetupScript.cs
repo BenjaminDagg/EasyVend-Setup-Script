@@ -37,6 +37,7 @@ namespace EasyVend_Setup_Scripts
         private LotteryUsersPage lotteryUsers;
         private SiteUsersPage siteUsers;
         private UserManagementPage userManagement;
+        private DeviceDetailsPage deviceDetails;
 
         [SetUp]
         public void Setup()
@@ -60,6 +61,7 @@ namespace EasyVend_Setup_Scripts
             lotteryUsers = new LotteryUsersPage(DriverFactory.Driver);
             siteUsers = new SiteUsersPage(DriverFactory.Driver);
             userManagement = new UserManagementPage(DriverFactory.Driver);
+            deviceDetails = new DeviceDetailsPage(DriverFactory.Driver);
         }
 
         [TearDown]
@@ -296,7 +298,7 @@ namespace EasyVend_Setup_Scripts
             List<SiteTableRecord> sites = excelData.GetSites()
                 .DistinctBy(site => site.SiteName)
                 .ToList();
-
+            
             DriverFactory.GoToUrl(baseUrl);
             loginPage.PerformLogin(AppUsers.Default.Username, AppUsers.Default.Password);
             Assert.IsTrue(LoginPage.IsLoggedIn);
@@ -309,7 +311,7 @@ namespace EasyVend_Setup_Scripts
                 siteList.ClearSearchField();
 
                 //site doesn't have any devices to add
-                if(site.DeviceCount == 0)
+                if(site.Devices.Count == 0)
                 {
                     
                     continue;
@@ -326,15 +328,38 @@ namespace EasyVend_Setup_Scripts
                 siteList.ClickSiteByIndex(0);
                 siteDetails.EntityTabs.ClickDeviceTab();
 
-                //site already has the specified number of devices
-                if(deviceList.getRecordCount() >= site.DeviceCount)
+                site.Devices.Reverse();
+                //loop through each device, click add device, enter device settings 
+                //on device details page then return to device list
+                foreach(DeviceTableRecord device in site.Devices)
                 {
-                    continue;
-                }
 
-                for(int i = 0; i < site.DeviceCount; i++)
-                {
+                    //if site already has the set # of devices then skip
+                    int count = deviceList.getRecordCount();
+                    if (count >= site.Devices.Count)
+                    {
+                        break;
+                    }
+
+                    //add device and click edit for new device
+                    deviceList.SortByColDesc(0);
                     deviceList.AddDevice();
+                    deviceList.ClickEditDevice(0);
+
+                    //enter device info. If theres an error then don't save.
+                    if (!string.IsNullOrEmpty(device.SerialNumber))
+                    {
+                        deviceDetails.EnterSerialNumber(device.SerialNumber);
+                    }
+                    deviceDetails.EnterExternalTerminalId(0, device.ExternalTerminalIds[0]);
+                    deviceDetails.EnterExternalTerminalId(1, device.ExternalTerminalIds[1]);
+                    deviceDetails.EnterExternalTerminalId(2, device.ExternalTerminalIds[2]);
+                    deviceDetails.EnterExternalTerminalId(3, device.ExternalTerminalIds[3]);
+                    Thread.Sleep(10000);
+                    deviceDetails.ClickSubmit();
+
+                    deviceDetails.GoBackToDeviceList();
+                    
                 }
 
                 navMenu.ClickSites();

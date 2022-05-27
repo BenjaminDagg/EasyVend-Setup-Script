@@ -1,0 +1,1 @@
+C:\Users\Ben\Documents\EasyVend TMS Setup Script\EasyVend Setup Scripts\obj\Release\net6.0\EasyVend Setup Scripts.csproj.AssemblyReference.cache

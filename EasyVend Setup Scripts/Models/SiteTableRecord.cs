@@ -22,6 +22,14 @@ namespace EasyVend_Setup_Scripts
         public string Zipcode { get; set; }
         public int DeviceCount { get; set; }
 
+        public List<DeviceTableRecord> Devices { get; set; }
+
+
+        public SiteTableRecord()
+        {
+            Devices = new List<DeviceTableRecord>();
+        }
+
 
         public void display()
         {
